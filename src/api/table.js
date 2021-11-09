@@ -1,9 +1,13 @@
-import request from '@/utils/request'
+import axios from '@/utils/axios'
 
 export function getList(params) {
-  return request({
+  return axios({
     url: '/vue-admin-template/table/list',
     method: 'get',
     params
   })
+}
+
+export default {
+  getList
 }
