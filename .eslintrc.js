@@ -11,14 +11,16 @@ module.exports = {
   },
   extends: ['plugin:vue/recommended', 'eslint:recommended'],
 
-  // add your custom rules here
-  //it is base on https://github.com/vuejs/eslint-config-vue
+  // custom rules here
   rules: {
-    "vue/max-attributes-per-line": [2, {
-      "singleline": 10,
+    "vue/max-attributes-per-line": [1, {
+      "singleline": {
+        "max": 5,
+        "allowFirstLine": true
+      },
       "multiline": {
-        "max": 1,
-        "allowFirstLine": false
+        "max": 5,
+        "allowFirstLine": true
       }
     }],
     "vue/singleline-html-element-content-newline": "off",
