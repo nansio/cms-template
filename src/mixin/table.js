@@ -26,6 +26,13 @@ export default {
       rowKey: 'id' // 用于详情接口请求的参数 防止后端接口参数名不统一
     }
   },
+  computed: {
+    dialogT() {
+      if (this.mode === 'add') return `新增${this.entityName}`
+      if (this.mode === 'edit') return `编辑${this.entityName}`
+      if (this.mode === 'detail') return `查看${this.entityName}`
+    }
+  },
   created() {
     this.getTableData()
   },
@@ -42,16 +49,22 @@ export default {
       }
       this.$post(this.url.list, payload).then(res => {
         this.loading = false
-        this.tableData = res.data.records
+        this.tableData = this.formatTableData(res.data.records)
         this.pagi.total = res.data.total
       }).finally(() => {
         this.loading = false
       })
     },
+    formatTableData(tableData) {
+      return this.insertOperations(tableData)
+    },
+    insertOperations(tableData) {
+      return tableData
+    },
     beforeAdd() {},
     onAdd() {
       this.mode = 'add'
-      this.currentRow = ''
+      this.currentRow = {}
       this.form = {}
       this.beforeAdd()
       this.dialogV = true
