@@ -89,6 +89,18 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/generator',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Generator',
+        component: () => import('@/views/generator/Generator.vue'),
+        meta: { title: '发动机', icon: 'form' }
+      }
+    ]
+  },
 
   {
     path: '/nested',
