@@ -2,7 +2,7 @@
 export default {
   data() {
     return {
-      form: {},
+      dialogForm: {},
       rules: {},
       submitting: false
     }
@@ -12,7 +12,7 @@ export default {
       this.$post(this.url.detail, {
         id: this.currentRow[this.tableRowKey]
       }).then(res => {
-        this.form = res.data
+        this.dialogForm = res.data
       })
     },
     onSubmit() {
@@ -25,7 +25,7 @@ export default {
       })
     },
     doSubmit() {
-      this.$post(this.url[this.mode], this.form).then(res => {
+      this.$post(this.url[this.mode], this.dialogForm).then(res => {
         this.$message.success('操作成功')
         this.dialogV = false
         this.afterSubmit()
@@ -34,6 +34,10 @@ export default {
     beforeSubmit() {},
     afterSubmit() {
       this.getTableData()
+    },
+    onDateRangeChange(arr) {
+      this.dialogForm.startTime = arr[0]
+      this.dialogForm.endTime = arr[1]
     }
   }
 }

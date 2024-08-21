@@ -23,8 +23,7 @@
         <i class="el-icon-plus" />
       </template>
       <div slot="tip" class="el-upload__tip">
-        <span v-if="formItem.imgSizeLimit">小于{{ formItem.imgSizeLimit }}mb,</span
-        ><span v-if="formItem.accept">支持{{ formItem.accept }}格式</span>
+        <span v-if="formItem.imgSizeLimit">小于{{ formItem.imgSizeLimit }}mb,</span><span v-if="formItem.accept">支持{{ formItem.accept }}格式</span>
         <span> {{ formItem.imgLimit ? '(' + fileList.length + '/' + formItem.imgLimit + ')' : '' }}</span>
       </div>
     </el-upload>

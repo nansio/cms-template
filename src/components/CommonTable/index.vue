@@ -91,8 +91,7 @@
                     size="mini"
                     @click="operationClick(scope.row, scope, operationItem)"
                   >
-                    {{ operationItem.label }}</el-button
-                  >
+                    {{ operationItem.label }}</el-button>
                 </template>
               </template>
             </template>

@@ -97,7 +97,7 @@ export const constantRoutes = [
         path: 'index',
         name: 'Generator',
         component: () => import('@/views/generator/Generator.vue'),
-        meta: { title: '发动机', icon: 'form' }
+        meta: { title: 'Generator', icon: 'form' }
       }
     ]
   },

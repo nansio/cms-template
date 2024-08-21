@@ -300,8 +300,7 @@
                 >
                   {{
                     formItem.optionsConfig ? optionItem[formItem.optionsConfig.label] : optionItem.label
-                  }}</el-checkbox
-                >
+                  }}</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
             <!-- radio -->
@@ -326,8 +325,7 @@
                   :label="formItem.optionsConfig ? optionItem[formItem.optionsConfig.value] : optionItem.value"
                   :border="formItem.border"
                 >
-                  {{ formItem.optionsConfig ? optionItem[formItem.optionsConfig.label] : optionItem.label }}</el-radio
-                >
+                  {{ formItem.optionsConfig ? optionItem[formItem.optionsConfig.label] : optionItem.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
             <!-- daterange -->
@@ -471,8 +469,7 @@
           :type="fnItem.btnType"
           @click="btnCkick(fnItem)"
         >
-          {{ fnItem.label }}</el-button
-        >
+          {{ fnItem.label }}</el-button>
       </template>
     </div>
   </div>

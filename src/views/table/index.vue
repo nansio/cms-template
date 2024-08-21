@@ -7,45 +7,7 @@
       </div>
       <common-table v-loading="loading" :table-data="tableData" :table-prop="tableCols" :table-page="pagi" />
       <el-dialog :title="dialogT" :visible.sync="dialogV" width="40%" top="10vh">
-        <common-form v-if="dialogV" :form-model="form" :disabled="mode==='detail'" :form-items="dialogFormItems" :form-rule="dialogFormRules" :form-fn="dialogFormFn">
-          <div slot="formSlot">
-            <div class="refund-info required-form-item">退货信息：</div>
-            <el-row :gutter="0">
-              <el-col :span="12">
-                <el-form-item label="收货人" prop="refundPersonName">
-                  <el-input v-model="form.refundPersonName" placeholder="请输入收货人姓名" size="normal" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="手机号码" prop="refundPhone">
-                  <el-input v-model="form.refundPhone" placeholder="请输入收货人手机号码" size="normal" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-form-item label="退货地址">
-              <el-row :gutter="0">
-                <el-col :span="8">
-                  <el-select v-model="form.province" disabled>
-                    <el-option label="江苏省" value="江苏省" />
-                  </el-select>
-                </el-col>
-                <el-col :span="8">
-                  <el-select v-model="form.city" disabled>
-                    <el-option label="泰兴市" value="泰兴市" />
-                  </el-select>
-                </el-col>
-                <el-col :span="8">
-                  <el-select v-model="form.country" disabled>
-                    <el-option label="滨江镇" value="滨江镇" />
-                  </el-select>
-                </el-col>
-              </el-row>
-            </el-form-item>
-            <el-form-item label="详细地址" prop="address">
-              <el-input v-model="form.address" placeholder="请输入详细地址" size="normal" />
-            </el-form-item>
-          </div>
-        </common-form>
+        <common-form v-if="dialogV" :form-model="dialogForm" :disabled="mode==='detail'" :form-items="dialogFormItems" :form-rule="dialogFormRules" :form-fn="dialogFormFn" />
       </el-dialog>
     </div>
   </div>
@@ -96,7 +58,7 @@ export default {
           fn: this.doSearch
         }
       ],
-      form: {
+      dialogForm: {
         address: '',
         bussinessDescription: '',
         city: '泰兴市',
@@ -163,14 +125,14 @@ export default {
     this.getFormRules()
   },
   methods: {
-    getTableData(){},
+    getTableData() {},
     onSubmit() {
       this.beforeSubmit()
       this.submitting = true
       this.doSubmit()
     },
     beforeSubmit() {
-      this.form.headImgList = this.form.headImgList.map(item => item.url)
+      this.dialogForm.headImgList = this.dialogForm.headImgList.map(item => item.url)
     },
     beforeAdd() {
       this.form = {

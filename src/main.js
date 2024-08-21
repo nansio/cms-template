@@ -26,6 +26,9 @@ Vue.component('common-form', CommonForm)
 import CommonTable from '@/components/CommonTable'
 Vue.component('common-table', CommonTable)
 
+import VueClipboard from 'vue-clipboard2'
+Vue.use(VueClipboard)
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

@@ -2,113 +2,94 @@
   <div class="generator">
     <div class="form-wrapper">
       <el-form
-        ref="entityFormRef"
-        :model="entityForm"
-        label-width="100px"
+        ref="entityFormRef" :model="entityForm"
+        label-width="100px" label-position="left"
       >
-        <el-form-item label="Entity Name">
-          <el-input v-model="entityForm.entityName" />
-        </el-form-item>
-
-        <!-- Multiple URL inputs -->
-        <el-form-item label="List URL">
-          <el-input v-model="entityForm.urlList" />
-        </el-form-item>
-        <el-form-item label="Add URL">
-          <el-input v-model="entityForm.urlAdd" />
-        </el-form-item>
-        <el-form-item label="Edit URL">
-          <el-input v-model="entityForm.urlEdit" />
-        </el-form-item>
-        <el-form-item label="Remove URL">
-          <el-input v-model="entityForm.urlRemove" />
-        </el-form-item>
-        <el-form-item label="Toggle URL">
-          <el-input v-model="entityForm.urlToggle" />
-        </el-form-item>
-
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="Entity Name">
+              <el-input v-model="entityForm.entityName" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="List URL">
+              <el-input v-model="entityForm.urlList" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Add URL">
+              <el-input v-model="entityForm.urlAdd" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Edit URL">
+              <el-input v-model="entityForm.urlEdit" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Remove URL">
+              <el-input v-model="entityForm.urlRemove" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Toggle URL">
+              <el-input v-model="entityForm.urlToggle" />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <!-- Table to input properties -->
-        <el-form-item label="属性和变量名">
-          <el-button
-            type="primary"
-            @click="addProperty"
-          >添加属性</el-button>
-          <el-table
-            :data="entityForm.properties"
-            border
-            stripe
-            style="width: 100%; margin-top: 10px;"
-          >
-            <el-table-column
-              prop="label"
-              label="属性名"
-            >
+        <el-form-item label="How much?">
+          <el-input-number v-model="propNumber" size="normal" label="" :min="1" :controls="false" @blur="insertProps" />
+          <el-button type="primary" style="margin-left:10px;" @click="addProperty">+1</el-button>
+          <el-table :data="entityForm.properties" border stripe style="width: 100%; margin-top: 10px" class="props-table">
+            <el-table-column prop="label" label="label" align="center" width="120">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.label" />
               </template>
             </el-table-column>
-
-            <el-table-column
-              prop="propName"
-              label="变量名"
-            >
+            <el-table-column prop="propName" label="propName" align="center" width="120">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.propName" />
               </template>
             </el-table-column>
-            <el-table-column label="queryForm">
+            <el-table-column prop="type" label="type" align="center" width="140">
               <template slot-scope="scope">
-                <el-switch
-                  v-model="scope.row.queryForm"
-                  active-color="#13ce66"
-                  inactive-color="#ff4949"
-                />
+                <el-select v-model="scope.row.type" filterable @change="onPropTypeChange($event,scope.row)">
+                  <el-option label="input" value="input" />
+                  <el-option label="select" value="select" />
+                  <el-option label="textarea" value="areaInput" />
+                  <el-option label="daterange" value="daterange" />
+                </el-select>
               </template>
             </el-table-column>
-            <el-table-column label="dialogForm">
+            <el-table-column label="tableCol" width="100" align="center">
               <template slot-scope="scope">
-                <el-switch
-                  v-model="scope.row.dialogForm"
-                  active-color="#13ce66"
-                  inactive-color="#ff4949"
-                />
+                <el-switch v-model="scope.row.tableCol" active-color="#13ce66" inactive-color="#ff4949" />
               </template>
             </el-table-column>
-            <el-table-column
-              prop="dialogFormItemSpan"
-              label="dialogFormItemSpan"
-            >
+            <el-table-column label="queryForm" width="100" align="center">
               <template slot-scope="scope">
-                <el-input-number
-                  v-model="scope.row.dialogFormItemSpan"
-                  :controls="false"
-                />
+                <el-switch v-model="scope.row.queryForm" active-color="#13ce66" inactive-color="#ff4949" />
               </template>
             </el-table-column>
-            <el-table-column label="tableCol">
+            <el-table-column label="dialogForm" width="100" align="center">
               <template slot-scope="scope">
-                <el-switch
-                  v-model="scope.row.tableCol"
-                  active-color="#13ce66"
-                  inactive-color="#ff4949"
-                />
+                <el-switch v-model="scope.row.dialogForm" active-color="#13ce66" inactive-color="#ff4949" />
               </template>
             </el-table-column>
-            <el-table-column label="必填">
+            <el-table-column label="required" width="100" align="center">
               <template slot-scope="scope">
-                <el-switch
-                  v-model="scope.row.required"
-                  active-color="#13ce66"
-                  inactive-color="#ff4949"
-                />
+                <el-switch v-model="scope.row.required" active-color="#13ce66" inactive-color="#ff4949" />
+              </template>
+            </el-table-column>
+            <el-table-column label="span" prop="span" width="130" align="center">
+              <template slot-scope="scope">
+                <el-input-number v-model.number="scope.row.span" :controls="false" style="width:100px;" />
               </template>
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
-                <el-button
-                  type="danger"
-                  @click="removeProperty(scope.$index)"
-                >删除</el-button>
+                <el-button type="text" @click="removeProperty(scope.$index)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -116,15 +97,9 @@
       </el-form>
     </div>
     <div class="export-btn">
-      <el-input
-        v-model="fileName"
-        placeholder="请输入文件名"
-        style="width: 200px; margin-right: 10px;"
-      />
-      <el-button
-        type="primary"
-        @click="exportVueFile"
-      >导出</el-button>
+      <!-- <el-input v-model="fileName" placeholder="请输入文件名" style="width: 200px; margin-right: 10px" /> -->
+      <el-button type="primary" plain @click="copy2Clipboard">Magic</el-button>
+      <!-- <el-button type="primary" plain @click="exportVueFile">导出</el-button> -->
     </div>
   </div>
 </template>
@@ -133,6 +108,7 @@
 export default {
   data() {
     return {
+      propNumber: 1,
       entityForm: {
         entityName: '用户',
         urlList: '',
@@ -142,38 +118,82 @@ export default {
         urlToggle: '',
         properties: [
           {
-            label: '',
-            propName: '',
+            label: '姓名',
+            type: 'input',
+            propName: 'name',
             queryForm: false,
             dialogForm: true,
             required: true,
             tableCol: true,
-            dialogFormItemSpan: 24
+            span: 24
           }
         ]
       },
-      fileName: 'result' // 默认文件名
+      fileName: '' // 默认文件名
     }
   },
   methods: {
     addProperty() {
-      this.entityForm.properties.push(
-        {
-          label: '',
-          propName: '',
-          queryForm: false,
-          dialogForm: true,
-          required: true,
-          tableCol: true,
-          dialogFormItemSpan: 24
-        }
-      )
+      this.entityForm.properties.push({
+        label: '姓名',
+        type: 'input',
+        propName: 'name',
+        queryForm: false,
+        dialogForm: true,
+        required: true,
+        tableCol: true,
+        span: 24
+      })
+    },
+    insertProps() {
+      this.entityForm.properties = []
+      for (let i = 0; i < this.propNumber; i++) {
+        this.addProperty()
+      }
     },
     removeProperty(index) {
       this.entityForm.properties.splice(index, 1)
     },
+    copy2Clipboard() {
+      const result = this.generateResultVue()
+      this.$copyText(result).then(() => {
+        this.$message.success('复制成功')
+      })
+    },
+    onPropTypeChange(type, row) {
+      if (type === 'areaInput') {
+        row.span = 24
+        row.tableCol = false
+        row.required = false
+        row.queryForm = false
+      }
+    },
+    insertTypeProps(item) {
+      switch (item.type) {
+        // case 'input': return
+        case 'select': {
+          item.options = []
+          item.optionsConfig = { value: 'id', label: 'content' }
+          item.changeFn = null
+          break
+        }
+        case 'daterange': {
+          item.prop = 'dates'
+          item.valueFormat = 'timestamp'
+          item.changeFn = this.onDateRangeChange
+        }
+      }
+    },
     generateResultVue() {
-      const { entityName, urlList, urlAdd, urlEdit, urlRemove, urlToggle, properties } = this.entityForm
+      const {
+        entityName,
+        urlList,
+        urlAdd,
+        urlEdit,
+        urlRemove,
+        urlToggle,
+        properties
+      } = this.entityForm
 
       const queryForm = {}
       const queryFormItems = []
@@ -181,25 +201,29 @@ export default {
       const dialogFormItems = []
       const tableCols = []
 
-      properties.forEach(prop => {
+      properties.forEach((prop) => {
         if (prop.queryForm) {
           queryForm[prop.propName] = ''
-          queryFormItems.push({
+          const item = {
             label: prop.label,
-            type: 'input', // 根据需求调整类型
-            prop: prop.label,
-            span: 8 // 可以根据需要调整
-          })
+            type: prop.type,
+            prop: prop.propName,
+            span: prop.span
+          }
+          this.insertTypeProps(item)
+          queryFormItems.push(item)
         }
         dialogForm[prop.propName] = ''
         if (prop.dialogForm) {
-          dialogFormItems.push({
+          const item = {
             label: prop.label,
-            type: 'input', // 根据需求调整类型
+            type: prop.type,
             prop: prop.propName,
-            span: 8, // 可以根据需要调整
-            required: prop.required // 如果必填，插入required:true
-          })
+            span: prop.span,
+            required: prop.required
+          }
+          this.insertTypeProps(item)
+          dialogFormItems.push(item)
         }
         tableCols.push({
           label: prop.label,
@@ -239,11 +263,11 @@ export default {
         delete: '${urlRemove}',
         toggleState: '${urlToggle}'
       },
-      queryForm: ${JSON.stringify(queryForm, null, 2)},
-      queryFormItems: ${JSON.stringify(queryFormItems, null, 2)},
-      dialogForm: ${JSON.stringify(dialogForm, null, 2)},
-      dialogFormItems: ${JSON.stringify(dialogFormItems, null, 2)},
-      tableCols: ${JSON.stringify(tableCols, null, 2)},
+      queryForm: ${this.stringifyWithoutQuotes(queryForm)},
+      queryFormItems: ${this.stringifyWithoutQuotes(queryFormItems)},
+      dialogForm: ${this.stringifyWithoutQuotes(dialogForm)},
+      dialogFormItems: ${this.stringifyWithoutQuotes(dialogFormItems)},
+      tableCols: ${this.stringifyWithoutQuotes(tableCols)},
       loading: false,
       dialogV: false,
       mode: 'add',
@@ -321,13 +345,40 @@ export default {
       link.download = `${this.fileName}.vue`
       link.click()
       URL.revokeObjectURL(link.href)
+    },
+    stringifyWithoutQuotes(obj) {
+      // 使用JSON.stringify()先转换为JSON字符串
+      const jsonString = JSON.stringify(obj, null, 8)
+
+      // 使用正则表达式替换掉属性值的双引号，注意这可能会导致语法错误如果属性值中包含逗号等特殊字符
+      let resultString = jsonString.replace(/"([^"]*)":/g, '$1:')
+      resultString = resultString.replace(/,"([^"]*)"/g, ',$1')
+      resultString = resultString.replace(/^\{"/, '{').replace(/"\}$/, '}')
+
+      return resultString
     }
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .generator {
   padding: 20px;
 }
+.form-wrapper {
+  margin-bottom: 20px;
+}
+.export-btn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.props-table{
+  ::v-deep{
+    .el-input__inner{
+      text-align: center;
+    }
+  }
+}
 </style>
+

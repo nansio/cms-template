@@ -9,7 +9,8 @@
     "build:stage": "vue-cli-service build --mode staging",
     "preview": "node build/index.js --preview",
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
-    "lint": "eslint --ext .js,.vue src"
+    "lint": "eslint --fix --ext .js,.vue src",
+    "lint:report": "eslint --ext .js,.vue src --format html -o ./report/eslint-report.html --quiet"
   },
   "dependencies": {
     "axios": "0.18.1",
@@ -21,6 +22,7 @@
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
     "vue": "2.6.10",
+    "vue-clipboard2": "^0.3.3",
     "vue-router": "3.0.6",
     "vuex": "3.1.0"
   },

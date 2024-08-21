@@ -15,14 +15,21 @@
         </el-col>
       </el-row>
     </div>
-    <el-table ref="el-table" v-loading="table.loading" :cell-style="cellStyle" :header-cell-style="headStyle" tooltip-effect="dark" :data="table.data"
-              :height="height? fixHeight? fixHeight: undefined:undefined" v-bind="$attrs" border v-on="$listeners" @row-click="rowClick" @cell-dblclick="cellDblclick"
-              @selection-change="handleSelectionChange">
+    <el-table
+      ref="el-table" v-loading="table.loading" :cell-style="cellStyle"
+      :header-cell-style="headStyle" tooltip-effect="dark" :data="table.data"
+      :height="height? fixHeight? fixHeight: undefined:undefined" v-bind="$attrs" border
+      v-on="$listeners" @row-click="rowClick" @cell-dblclick="cellDblclick"
+      @selection-change="handleSelectionChange"
+    >
       <!-- 序列号/复选框 -->
       <div v-if="table.firstColumn">
         <el-table-column v-if="table.firstColumn.type!=='index'" :type="table.firstColumn.type" width="50" :label="table.firstColumn.label" align="center" />
-        <el-table-column v-if="table.firstColumn.type==='index'" :type="table.firstColumn.type" width="50" :reserve-selection="table.firstColumn.isPaging||false" :label="table.firstColumn.label"
-                         align="center">
+        <el-table-column
+          v-if="table.firstColumn.type==='index'" :type="table.firstColumn.type" width="50"
+          :reserve-selection="table.firstColumn.isPaging||false" :label="table.firstColumn.label"
+          align="center"
+        >
           <template slot-scope="scope">
             <span>{{ isShowPagination?((table.currentPage - 1) * table.pageSize + scope.$index + 1):scope.$index + 1 }}</span>
           </template>
@@ -30,8 +37,12 @@
       </div>
       <slot name="begin" />
 
-      <el-table-column v-for="(item, index) in columnList" :key="index" :type="item.type" :label="item.label" :prop="item.prop" :min-width="item['min-width'] || item.minWidth || item.width"
-                       :sortable="item.sort" :align="item.align || 'center'" :show-overflow-tooltip="item.noShowTip" v-bind="$attrs" v-on="$listeners">
+      <el-table-column
+        v-for="(item, index) in columnList" :key="index" :type="item.type"
+        :label="item.label" :prop="item.prop" :min-width="item['min-width'] || item.minWidth || item.width"
+        :sortable="item.sort" :align="item.align || 'center'" :show-overflow-tooltip="item.noShowTip"
+        v-bind="$attrs" v-on="$listeners"
+      >
         <template slot-scope="scope">
           <template v-if="item.slotName">
             <slot :name="item.slotName" :param="scope" />
@@ -48,21 +59,29 @@
       </el-table-column>
       <slot />
 
-      <el-table-column v-if="table.operator" :fixed="table.operatorConfig && table.operatorConfig.fixed" :label="(table.operatorConfig && table.operatorConfig.label) || '操作'"
-                       :min-width="(table.operatorConfig && table.operatorConfig.width || table.operatorConfig.minWidth) || 100" align="center">
+      <el-table-column
+        v-if="table.operator" :fixed="table.operatorConfig && table.operatorConfig.fixed" :label="(table.operatorConfig && table.operatorConfig.label) || '操作'"
+        :min-width="(table.operatorConfig && table.operatorConfig.width || table.operatorConfig.minWidth) || 100" align="center"
+      >
         <template slot-scope="scope">
           <el-image v-if="table.operatorImage" :id="scope.row.id" :src="scope.row.src" :style="table.operatorImage.style ? table.operatorImage.style : ''" :preview-src-list="scope.row.srcList" fit="fill" />
-          <el-button v-for="(item, index) in table.operator" v-show="checkIsShow(scope,item)" :key="index" :type="item.type"
-                     :icon="item.icon ? item.icon : ''" :style="item.style ? item.style : ''" @click="item.fun(scope.row)"
+          <el-button
+            v-for="(item, index) in table.operator" v-show="checkIsShow(scope,item)" :key="index"
+            :type="item.type"
+            :icon="item.icon ? item.icon : ''" :style="item.style ? item.style : ''" @click="item.fun(scope.row)"
           >{{ item.text }}
           </el-button>
         </template>
       </el-table-column>
       <slot name="end" />
     </el-table>
-    <el-pagination v-show="table.data && table.data.length && isShowPagination" :current-page="table.currentPage" :page-sizes="[10, 20, 50, 100]" :page-size="table.pageSize"
-                   :layout="size?'total, prev, pager, next':'total, sizes, prev, pager, next, jumper'" :total="table.total" v-bind="$attrs" background @current-change="handleCurrentChange"
-                   @size-change="handleSizeChange" v-on="$listeners" />
+    <el-pagination
+      v-show="table.data && table.data.length && isShowPagination" :current-page="table.currentPage" :page-sizes="[10, 20, 50, 100]"
+      :page-size="table.pageSize"
+      :layout="size?'total, prev, pager, next':'total, sizes, prev, pager, next, jumper'" :total="table.total" v-bind="$attrs"
+      background @current-change="handleCurrentChange"
+      @size-change="handleSizeChange" v-on="$listeners"
+    />
   </div>
 </template>
 

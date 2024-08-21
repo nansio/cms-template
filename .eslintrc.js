@@ -13,19 +13,13 @@ module.exports = {
 
   // custom rules here
   rules: {
-    // 'vue/max-attributes-per-line': [
-    //   1,
-    //   {
-    //     singleline: {
-    //       max: 5,
-    //       allowFirstLine: true
-    //     },
-    //     multiline: {
-    //       max: 5,
-    //       allowFirstLine: true
-    //     }
-    //   }
-    // ],
+    'vue/max-attributes-per-line': [
+      "error",
+      {
+        "singleline": Infinity,
+        "multiline": 3
+      }
+    ],
     "vue/singleline-html-element-content-newline": "off",
     "vue/multiline-html-element-content-newline":"off",
     "vue/name-property-casing": ["error", "PascalCase"],
