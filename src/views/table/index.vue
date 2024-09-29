@@ -15,8 +15,8 @@
 
 <script>
 
-import FormMixin from '@/mixin/form'
-import TableMixin from '@/mixin/table'
+import FormMixin from '@/mixins/form'
+import TableMixin from '@/mixins/table'
 import regexps from '@/utils/regexps'
 export default {
   mixins: [FormMixin, TableMixin],

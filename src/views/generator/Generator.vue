@@ -42,12 +42,12 @@
           <el-input-number v-model="propNumber" size="normal" label="" :min="1" :controls="false" @blur="insertProps" />
           <el-button type="primary" style="margin-left:10px;" @click="addProperty">+1</el-button>
           <el-table :data="entityForm.properties" border stripe style="width: 100%; margin-top: 10px" class="props-table">
-            <el-table-column prop="label" label="label" align="center" width="120">
+            <el-table-column prop="label" label="label" align="center">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.label" />
               </template>
             </el-table-column>
-            <el-table-column prop="propName" label="propName" align="center" width="120">
+            <el-table-column prop="propName" label="propName" align="center">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.propName" />
               </template>
@@ -57,6 +57,8 @@
                 <el-select v-model="scope.row.type" filterable @change="onPropTypeChange($event,scope.row)">
                   <el-option label="input" value="input" />
                   <el-option label="select" value="select" />
+                  <el-option label="index" value="index" />
+                  <el-option label="selection" value="selection" />
                   <el-option label="textarea" value="areaInput" />
                   <el-option label="daterange" value="daterange" />
                 </el-select>
@@ -98,6 +100,7 @@
     </div>
     <div class="export-btn">
       <!-- <el-input v-model="fileName" placeholder="请输入文件名" style="width: 200px; margin-right: 10px" /> -->
+      <el-button type="primary" plain @click="doClear">Clear</el-button>
       <el-button type="primary" plain @click="copy2Clipboard">Magic</el-button>
       <!-- <el-button type="primary" plain @click="exportVueFile">导出</el-button> -->
     </div>
@@ -130,6 +133,11 @@ export default {
         ]
       },
       fileName: '' // 默认文件名
+    }
+  },
+  mounted() {
+    if (localStorage.getItem('entityForm')) {
+      this.entityForm = JSON.parse(localStorage.getItem('entityForm'))
     }
   },
   methods: {
@@ -184,7 +192,12 @@ export default {
         }
       }
     },
+    doClear() {
+      localStorage.clear()
+      this.$message.success('本地存储已清空')
+    },
     generateResultVue() {
+      localStorage.setItem('entityForm', JSON.stringify(this.entityForm))
       const {
         entityName,
         urlList,
@@ -226,10 +239,12 @@ export default {
           dialogFormItems.push(item)
         }
         tableCols.push({
+          type: 'text',
           label: prop.label,
           prop: prop.propName
         })
       })
+      tableCols.push({ type: 'operation', label: '操作', width: '260px' })
 
       const resultVueTemplate = `
 <template>
@@ -241,15 +256,15 @@ export default {
       </div>
       <common-table v-loading="loading" :table-data="tableData" :table-prop="tableCols" :table-page="pagi" />
       <el-dialog :title="dialogT" :visible.sync="dialogV" width="40%" top="10vh">
-        <common-form v-if="dialogV" :form-model="form" :disabled="mode==='detail'" :form-items="dialogFormItems" :form-rule="dialogFormRules" :form-fn="dialogFormFn" />
+        <common-form v-if="dialogV" :form-model="dialogForm" :disabled="mode==='detail'" :form-items="dialogFormItems" :form-rule="dialogFormRules" :form-fn="dialogFormFn" />
       </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import tableMixin from './table.js';
-import formMixin from './form.js';
+import tableMixin from '@/mixins/table.js';
+import formMixin from '@/mixins/form.js';
 
 export default {
   mixins: [tableMixin, formMixin],
@@ -264,9 +279,30 @@ export default {
         toggleState: '${urlToggle}'
       },
       queryForm: ${this.stringifyWithoutQuotes(queryForm)},
+      queryFormFn: [
+        {
+          label: '查询',
+          size: 'small',
+          btnType: 'primary',
+          fn: this.doSearch
+        }
+      ],
       queryFormItems: ${this.stringifyWithoutQuotes(queryFormItems)},
       dialogForm: ${this.stringifyWithoutQuotes(dialogForm)},
       dialogFormItems: ${this.stringifyWithoutQuotes(dialogFormItems)},
+      dialogFormFn: [
+        {
+          label: '提交',
+          btnType: 'primary',
+          isValiDate: true,
+          fn: this.onSubmit
+        },
+        {
+          label: '取消',
+          btnType: 'default',
+          fn: this.closeDialog
+        }
+      ],
       tableCols: ${this.stringifyWithoutQuotes(tableCols)},
       loading: false,
       dialogV: false,
@@ -279,12 +315,19 @@ export default {
         pageNo: 1,
         pageSize: 10
       },
-      entityName: '${entityName}',
-      dialogT: ''
+      entityName: '${entityName}'
     }
   },
   methods: {
-    // 这里可以定义其他方法
+    insertOperations(tableData) {
+      tableData.forEach(row => {
+        row.operations = [
+          { label: '修改', type: 'primary', fn: this.onEdit },
+          { label: '删除', type: 'danger', fn: this.onDelete }
+        ]
+      })
+      return tableData
+    }
   }
 }
 <\/script>
