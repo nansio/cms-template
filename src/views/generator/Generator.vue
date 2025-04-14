@@ -181,8 +181,8 @@ export default {
         // case 'input': return
         case 'select': {
           item.options = []
-          item.optionsConfig = { value: 'id', label: 'content' }
-          item.changeFn = null
+          item.optionsConfig = { value: 'value', label: 'label' }
+          item.changeFn = 'this.doSearch'
           break
         }
         case 'daterange': {
@@ -270,7 +270,7 @@ export default {
   mixins: [tableMixin, formMixin],
   data() {
     return {
-      entity: '${entityName}',
+      entityName: '${entityName}',
       url: {
         list: '${urlList}',
         add: '${urlAdd}',
@@ -314,8 +314,7 @@ export default {
         total: 0,
         pageNo: 1,
         pageSize: 10
-      },
-      entityName: '${entityName}'
+      }
     }
   },
   methods: {

@@ -8,7 +8,7 @@
       </div>
       <common-table v-loading="loading" :table-data="tableData" :table-prop="tableCols" :table-page="pagi" />
       <el-dialog :title="dialogT" :visible.sync="dialogV" width="40%" top="10vh">
-        <common-form v-if="dialogV" :form-model="form" :disabled="mode==='detail'" :form-items="dialogFormItems" :form-rule="dialogFormRules" :form-fn="dialogFormFn" />
+        <common-form v-if="dialogV" :form-model="dialogForm" :disabled="mode==='detail'" :form-items="dialogFormItems" :form-rule="dialogFormRules" :form-fn="dialogFormFn" />
       </el-dialog>
     </div>
   </div>
@@ -22,7 +22,7 @@ export default {
   mixins: [tableMixin, formMixin],
   data() {
     return {
-      entity: '用户',
+      entityName: '供需',
       url: {
         list: '',
         add: '',
@@ -30,84 +30,150 @@ export default {
         delete: '',
         toggleState: ''
       },
-      queryForm: {},
-      queryFormItems: [],
+      queryForm: {
+        workTitle: '',
+        keyword: ''
+      },
+      queryFormFn: [
+        {
+          label: '查询',
+          size: 'small',
+          btnType: 'primary',
+          fn: this.doSearch
+        }
+      ],
+      queryFormItems: [
+        {
+          label: '需求类型',
+          type: 'select',
+          prop: 'workTitle',
+          span: 24,
+          options: [],
+          optionsConfig: {
+            value: 'value',
+            label: 'label'
+          },
+          changeFn: 'this.doSearch'
+        },
+        {
+          label: '姓名',
+          type: 'input',
+          prop: 'keyword',
+          span: 24
+        }
+      ],
       dialogForm: {
-        expertStatu: '',
-        userName: '',
-        phoneNumber: '',
-        password: '',
-        name: ''
+        name: '',
+        workTitle: '',
+        issuer: '',
+        description: '',
+        pubTime: '',
+        viewNum: '',
+        keyword: ''
       },
       dialogFormItems: [
         {
-          label: '角色',
+          label: '需求类型',
           type: 'select',
-          prop: 'expertStatu',
+          prop: 'workTitle',
           span: 24,
           required: true,
           options: [],
           optionsConfig: {
-            value: 'id',
-            label: 'content'
+            value: 'value',
+            label: 'label'
           },
-          changeFn: null
+          changeFn: 'this.doSearch'
         },
         {
-          label: '用户名称',
+          label: '发布人',
           type: 'input',
-          prop: 'userName',
+          prop: 'issuer',
           span: 24,
           required: true
         },
         {
-          label: '账号',
+          label: '发布内容',
           type: 'input',
-          prop: 'phoneNumber',
+          prop: 'description',
           span: 24,
           required: true
         },
         {
-          label: '密码',
+          label: '发布时间',
           type: 'input',
-          prop: 'password',
+          prop: 'pubTime',
           span: 24,
           required: true
         },
         {
-          label: '账号状态',
-          type: 'select',
-          prop: 'name',
+          label: '浏览量',
+          type: 'input',
+          prop: 'viewNum',
           span: 24,
-          required: true,
-          options: [],
-          optionsConfig: {
-            value: 'id',
-            label: 'content'
-          },
-          changeFn: null
+          required: true
+        },
+        {
+          label: '姓名',
+          type: 'input',
+          prop: 'keyword',
+          span: 24,
+          required: true
+        }
+      ],
+      dialogFormFn: [
+        {
+          label: '提交',
+          btnType: 'primary',
+          isValiDate: true,
+          fn: this.onSubmit
+        },
+        {
+          label: '取消',
+          btnType: 'default',
+          fn: this.closeDialog
         }
       ],
       tableCols: [
         {
-          label: '角色',
-          prop: 'expertStatu'
-        },
-        {
-          label: '用户名称',
-          prop: 'userName'
-        },
-        {
-          label: '账号',
-          prop: 'phoneNumber'
-        },
-        {
-          label: '密码',
-          prop: 'password'
-        },
-        {
-          label: '账号状态',
+          type: 'text',
+          label: '序号',
           prop: 'name'
+        },
+        {
+          type: 'text',
+          label: '需求类型',
+          prop: 'workTitle'
+        },
+        {
+          type: 'text',
+          label: '发布人',
+          prop: 'issuer'
+        },
+        {
+          type: 'text',
+          label: '发布内容',
+          prop: 'description'
+        },
+        {
+          type: 'text',
+          label: '发布时间',
+          prop: 'pubTime'
+        },
+        {
+          type: 'text',
+          label: '浏览量',
+          prop: 'viewNum'
+        },
+        {
+          type: 'text',
+          label: '姓名',
+          prop: 'keyword'
+        },
+        {
+          type: 'operation',
+          label: '操作',
+          width: '260px'
         }
       ],
       loading: false,
@@ -120,13 +186,19 @@ export default {
         total: 0,
         pageNo: 1,
         pageSize: 10
-      },
-      entityName: '用户',
-      dialogT: ''
+      }
     }
   },
   methods: {
-    // 这里可以定义其他方法
+    insertOperations(tableData) {
+      tableData.forEach(row => {
+        row.operations = [
+          { label: '修改', type: 'primary', fn: this.onEdit },
+          { label: '删除', type: 'danger', fn: this.onDelete }
+        ]
+      })
+      return tableData
+    }
   }
 }
 </script>
