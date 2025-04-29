@@ -25,6 +25,9 @@ import CommonForm from '@/components/CommonForm'
 Vue.component('common-form', CommonForm)
 import CommonTable from '@/components/CommonTable'
 Vue.component('common-table', CommonTable)
+// 通用对象管理组件注册
+import GeneralObjectMgmt from '@/components/GeneralObjectMgmt/GeneralObjectMgmt.vue'
+Vue.component('GeneralObjectMgmt', GeneralObjectMgmt)
 
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
