@@ -2,6 +2,7 @@
 export default {
   data() {
     return {
+      ApiPost: function() {},
       loading: false,
       tableData: [],
       currentRow: {},
@@ -23,6 +24,7 @@ export default {
       row: null,
       imgList: [],
       fileList: [],
+      defaultGetTableData: true,
       rowKey: 'id' // 用于详情接口请求的参数 防止后端接口参数名不统一
     }
   },
@@ -34,7 +36,7 @@ export default {
     }
   },
   created() {
-    this.getTableData()
+    this.defaultGetTableData && this.getTableData()
   },
   methods: {
     doSearch() {
@@ -44,16 +46,21 @@ export default {
     getTableData() {
       this.loading = true
       const payload = {
-        ...this.pagi,
-        ...this.queryForm
+        ...this.queryForm,
+        pageNo: this.pagi.pageNo,
+        pageSize: this.pagi.pageSize
       }
-      this.$post(this.url.list, payload).then(res => {
+      const formattedPayload = this.formatQueryFormParams(payload)
+      this.ApiPost(this.url.list, formattedPayload).then(res => {
         this.loading = false
         this.tableData = this.formatTableData(res.data.records)
         this.pagi.total = res.data.total
       }).finally(() => {
         this.loading = false
       })
+    },
+    formatQueryFormParams(payload) {
+      return payload
     },
     formatTableData(tableData) {
       return this.insertOperations(tableData)
@@ -65,21 +72,22 @@ export default {
     onAdd() {
       this.mode = 'add'
       this.currentRow = {}
-      this.form = {}
+      this.dialogForm = {}
+      this.resetDialogForm()
       this.beforeAdd()
       this.dialogV = true
     },
     onEdit(row) {
       this.mode = 'edit'
       this.currentRow = row
-      this.form = JSON.parse(JSON.stringify(row))
+      this.dialogForm = JSON.parse(JSON.stringify(row))
       this.formatFormDetails()
       this.dialogV = true
     },
     onDetail(row) {
       this.mode = 'detail'
       this.currentRow = row
-      this.form = JSON.parse(JSON.stringify(row))
+      this.dialogForm = JSON.parse(JSON.stringify(row))
       this.formatFormDetails()
       this.dialogV = true
     },
@@ -91,9 +99,11 @@ export default {
       }).then(() => {
         const params = {}
         params[this.rowKey] = row[this.rowKey]
-        this.$post(this.url.delete, null, params).then(res => {
-          this.$message.success('操作成功')
-          this.getTableData()
+        this.ApiPost(this.url.delete, null, { params }).then(res => {
+          if (res.flag) {
+            this.getTableData()
+            this.$message.success('操作成功')
+          }
         })
       }).catch(() => this.$message.info('已取消删除!'))
     },
@@ -112,7 +122,7 @@ export default {
       }).then(() => {
         const params = {}
         params[this.rowKey] = row[this.rowKey]
-        this.$post(this.url.toggleState, null, params).then(res => {
+        this.ApiPost(this.url.toggleState, null, params).then(res => {
           this.$message.success('操作成功')
           this.getTableData()
         })
@@ -129,8 +139,11 @@ export default {
     },
     closeDialog() {
       this.dialogV = false
-      this.$refs.formRef.resetFields()
+      this.resetDialogForm()
+      // this.$refs.dialogFormRef.resetFields()
       this.getTableData()
+    },
+    resetDialogForm() {
     }
   }
 }
